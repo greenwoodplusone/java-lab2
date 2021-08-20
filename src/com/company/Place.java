@@ -1,6 +1,7 @@
 package com.company;
 
 public class Place {
+
     private long code;
     private String status;
     private String name;
@@ -14,5 +15,17 @@ public class Place {
     @Override
     public String toString() {
         return "Код = " + code + ", имя = " + name + ", статус = " + status + ";";
+    }
+
+    public String getname() {
+        return name;
+    }
+
+    public long getCode() {
+        return code;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

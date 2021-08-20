@@ -23,6 +23,27 @@ public class OktmoData {
         allStatuses.add(status);
     }
 
+    public String getNamePlace(int number) {
+        if (number > places.size()) {
+            System.out.println("Превышено количество населенных пунктов");
+        }
+        return places.get(number).getname();
+    }
+
+    public Long getCodePlace(int number) {
+        if (number > places.size()) {
+            System.out.println("Превышено количество населенных пунктов");
+        }
+        return places.get(number).getCode();
+    }
+
+    public String getStatusPlace(int number) {
+        if (number > places.size()) {
+            System.out.println("Превышено количество населенных пунктов");
+        }
+        return places.get(number).getStatus();
+    }
+
     /**
      * Получение колечества насленных пунктов
      *

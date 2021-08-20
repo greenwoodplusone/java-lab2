@@ -44,7 +44,7 @@ public class OktmoReader {
                         int indexSplit = q[6].indexOf(" ");
                         // || !q[6].startsWith("[А-Я]")
                         status = indexSplit != -1 ? q[6].substring(1, indexSplit) : "Статус неопределен";
-                        name = indexSplit != -1 ? q[6].substring(indexSplit, q[6].length() - 1)  : "Статус неопределен";
+                        name = indexSplit != -1 ? q[6].substring(indexSplit + 1, q[6].length() - 1)  : "Статус неопределен";
 
                         Place newPlace = new Place(code, status, name);
                         data.addPlace(newPlace, status);
