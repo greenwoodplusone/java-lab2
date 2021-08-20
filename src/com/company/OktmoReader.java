@@ -11,27 +11,53 @@ public class OktmoReader {
     public void readPlaces(String fileName, OktmoData data) {
         int lineCount=0;
 
-        try (
-                BufferedReader br = new BufferedReader(
+        try ( BufferedReader br = new BufferedReader(
                         new InputStreamReader(
                                 new FileInputStream(fileName)
                                 , "cp1251")
-                        // читаем файл из двоичного потока
-                        // в виде текста с нужной кодировкой
                 )
         ) {
             String s;
             while ((s=br.readLine()) !=null ) { // пока readLine() возвращает не null
                 lineCount++;
-                System.out.println(s);
 
-                String [] q= s.split("[;]");
-                System.out.println(Arrays.asList(q));
 
-                System.out.println(s);
-                //new Place();
+                String [] q= s.split(";");
+                StringBuilder codeStr = new StringBuilder("");
+                for (int i = 0; i < 4; i++) {
+                    String symbol = q[i].replace("\"", "");
+                    if (Integer.parseInt(symbol) == 0) {
+                        codeStr.setLength(0);
+                        break;
+                    } else {
+                        codeStr.append(symbol);
+                    }
+                }
 
-                if (lineCount==20) break; // пример частичного чтения первых 20 строк
+                if (codeStr.length() > 0) {
+                    Long code = 0L;
+                    String status = "";
+                    String name = "";
+                    try {
+                        code = Long.parseLong(codeStr.toString());
+
+                        int indexSplit = q[6].indexOf(" ");
+                        // || !q[6].startsWith("[А-Я]")
+                        status = indexSplit != -1 ? q[6].substring(1, indexSplit) : "Статус неопределен";
+                        name = indexSplit != -1 ? q[6].substring(indexSplit, q[6].length() - 1)  : "Статус неопределен";
+
+                        Place newPlace = new Place(code, status, name);
+                        data.addPlace(newPlace, status);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                        System.out.println("Ошибка в сроке файла №" + lineCount);
+                        System.out.println("code = " + code);
+                        System.out.println("name = " + name);
+                        System.out.println("status = " + status);
+                    }
+                }
             }
         }
         catch (IOException ex) {

@@ -10,4 +10,9 @@ public class Place {
         this.status = status;
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "Код = " + code + ", имя = " + name + ", статус = " + status + ";";
+    }
 }
