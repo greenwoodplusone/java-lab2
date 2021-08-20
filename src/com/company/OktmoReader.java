@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class OktmoReader {
 
@@ -21,6 +20,7 @@ public class OktmoReader {
             while ((s=br.readLine()) !=null ) { // пока readLine() возвращает не null
                 lineCount++;
 
+                // Проверка кода на наличие нулевых значение
 
                 String [] q= s.split(";");
                 StringBuilder codeStr = new StringBuilder("");
@@ -34,11 +34,14 @@ public class OktmoReader {
                     }
                 }
 
+                // Парсинг сток и запись в список
+
                 if (codeStr.length() > 0) {
                     Long code = 0L;
                     String status = "";
                     String name = "";
                     try {
+                        // Преобразование кода в Long
                         code = Long.parseLong(codeStr.toString());
 
                         int indexSplit = q[6].indexOf(" ");
@@ -49,6 +52,9 @@ public class OktmoReader {
                         Place newPlace = new Place(code, status, name);
                         data.addPlace(newPlace, status);
 
+                        // Добавление статуса в карту статусов
+                        OktmoAnalyzer.fillingMapStatuses(status);
+
                     } catch (Exception e) {
                         e.printStackTrace();
 
@@ -58,6 +64,8 @@ public class OktmoReader {
                         System.out.println("status = " + status);
                     }
                 }
+
+//                if (lineCount==20000) break; // для проверки сортировки
             }
         }
         catch (IOException ex) {

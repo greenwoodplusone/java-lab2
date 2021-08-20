@@ -1,6 +1,9 @@
-package com.company;
-
+import com.company.OktmoData;
+import com.company.OktmoReader;
 import org.junit.jupiter.api.Test;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,5 +23,14 @@ public class OktmoTest {
         assertEquals(place.getNamePlace(place.getCountPlaces() - 1), "Лумку-Корань");
         assertEquals(place.getCodePlace(place.getCountPlaces() - 1), 99_630_440_116L);
         assertEquals(place.getStatusPlace(place.getCountPlaces() - 1), "ст");
+
+        Pattern re2 = Pattern.compile("еТ", Pattern.CASE_INSENSITIVE);
+        Matcher m2 = re2.matcher("ПРивеТ");
+        System.out.println(m2.find());
+
+        Pattern reg = Pattern.compile(".?.?ово,", Pattern.CASE_INSENSITIVE);
+        Matcher mather = reg.matcher("Жтово,");
+
+        System.out.println(mather.find());
     }
 }

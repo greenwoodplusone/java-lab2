@@ -1,6 +1,6 @@
 package com.company;
 
-public class Place {
+public class Place  implements Comparable<Place>{
 
     private long code;
     private String status;
@@ -27,5 +27,17 @@ public class Place {
 
     public String getStatus() {
         return status;
+    }
+
+    @Override
+    public int compareTo(Place place){
+        return this.getname().compareTo(place.getname());
+
+//        if (this.name.charAt(0) > place.name.charAt(0))
+//            return 1;
+//        else if (this.name.charAt(0) == place.name.charAt(0))
+//            return 0;
+//        else
+//            return -1;
     }
 }
