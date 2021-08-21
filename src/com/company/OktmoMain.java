@@ -5,6 +5,9 @@ import java.util.regex.*;
 public class OktmoMain {
     final private static String ONE_REG = "^[А-Я].?ово$";
 
+    //\\S заменить на . если хотим учитывать названия из  нескольки слов
+    final private static String TWO_REG = "^([^ауоиэыяюеё])\\S*\\1$";
+
     public static void main(String[] args) {
         OktmoData place = new OktmoData();
         new OktmoReader().readPlaces("data-20210701-structure-20150128.csv", place);
@@ -22,5 +25,8 @@ public class OktmoMain {
         // РЕГУЛЯРНЫЕ ВЫРАЖЕНИЯ
         System.out.println("\nСписок всех НП, название которых содержит меньше 6 букв и заканчиваются на -ово:\n" +
                 OktmoAnalyzer.placesGivenTheExpression(place, ONE_REG));
+
+        System.out.println("\nСписок всех НП, которые начинаются и заканчиваются га одну и ту же согласную букву:\n" +
+                OktmoAnalyzer.placesGivenTheExpression(place, TWO_REG, true));
     }
 }

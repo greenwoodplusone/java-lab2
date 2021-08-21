@@ -32,12 +32,37 @@ public class OktmoAnalyzer {
         return mapStatuses;
     }
 
+    /**
+     * Создание множетсва с фильтром по регулярному выражению
+     *
+     * @param place
+     * @param regexr
+     * @return
+     */
     public static HashSet<String> placesGivenTheExpression(OktmoData place, String regexr) {
-        HashSet<String> placesGivenTheExpression = new HashSet<String>();;
+        return placesGivenTheExpression(place, regexr, false);
+    }
+
+    /**
+     * Создание множетсва с фильтром по регулярному выражению (игнорирует регистр)
+     *
+     * @param place
+     * @param regexr
+     * @return
+     */
+    public static HashSet<String> placesGivenTheExpression(OktmoData place, String regexr, boolean ignoreСase) {
+        HashSet<String> placesGivenTheExpression = new HashSet<String>();
 
         for (Place thisPlace : place.getPlaces()) {
 
-            Pattern reg = Pattern.compile(regexr, Pattern.CASE_INSENSITIVE);
+            // Проверка на игнорирование регистра
+            Pattern reg;
+            if (ignoreСase) {
+                reg = Pattern.compile(regexr, Pattern.CASE_INSENSITIVE|Pattern.UNICODE_CASE);
+            } else {
+                reg = Pattern.compile(regexr);
+            }
+
             String str = thisPlace.getname();
             Matcher matcher = reg.matcher(str);
 
