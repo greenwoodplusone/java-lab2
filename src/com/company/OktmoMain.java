@@ -9,7 +9,7 @@ public class OktmoMain {
     final public static String TWO_REG = "^([^ауоиэыяюеё])\\S*\\1$";
 
     final public static String REG =
-            "(\\d\\d).*?(\\d\\d\\d).*?(\\d\\d\\d).*?(?!000)(\\d\\d\\d).*?([a-я]+) ([a-я- \\d()]+)";
+            "(\\d\\d).*?(\\d\\d\\d).*?(\\d\\d\\d).*?(?!000)(\\d\\d\\d).*?([1-9]?[-/.a-я]+)\\s(((\"*)[/.,ёA-Z№a-я-\\s\\d()]+\\8)+)";
 
     public static void main(String[] args) {
         OktmoData place = new OktmoData();
@@ -30,7 +30,7 @@ public class OktmoMain {
         System.out.println("\nСписок всех НП, название которых содержит меньше 6 букв и заканчиваются на -ово:\n" +
                 OktmoAnalyzer.placesGivenTheExpression(place, ONE_REG));
 
-        System.out.println("\nСписок всех НП, которые начинаются и заканчиваются га одну и ту же согласную букву:\n" +
+        System.out.println("\nСписок всех НП, которые начинаются и заканчиваются на одну и ту же согласную букву:\n" +
                 OktmoAnalyzer.placesGivenTheExpression(place, TWO_REG, true));
     }
 }

@@ -46,9 +46,16 @@ public class OktmoReader {
                     code = Long.parseLong(codeStr.toString());
 
                     int indexSplit = q[6].indexOf(" ");
-                    // || !q[6].startsWith("[А-Я]")
-                    status = indexSplit != -1 ? q[6].substring(1, indexSplit) : "Статус неопределен";
-                    name = indexSplit != -1 ? q[6].substring(indexSplit + 1, q[6].length() - 1)  : "Статус неопределен";
+
+                    // Данный блок кода добавлен из-за одного населенного пункта:
+                    // "94";"604";"420";"171";"8";"2";"Балезино-3";;;"000";"0";14.06.2013;01.01.2014
+                    // у него не прописан статус НП
+                    if (indexSplit == -1) {
+                        continue;
+                    }
+
+                    status = indexSplit != -1 ? q[6].substring(1, indexSplit) : "Нет статуса";
+                    name = indexSplit != -1 ? q[6].substring(indexSplit + 1, q[6].length() - 1)  : q[6].substring(1, q[6].length() - 1);
 
                     Place newPlace = new Place(code, status, name);
                     data.addPlace(newPlace, status);
@@ -65,7 +72,7 @@ public class OktmoReader {
                     System.out.println("status = " + status);
                 }
 
-//                if (lineCount==20) break; // для проверки сортировки
+//                if (lineCount == 50) break; // для проверки сортировки
             }
         }
         catch (IOException ex) {
@@ -112,7 +119,7 @@ public class OktmoReader {
                     OktmoAnalyzer.fillingMapStatuses(status);
                 }
 
-//                if (lineCount==20) break; // для проверки сортировки
+//                if (lineCount == 50) break; // для проверки сортировки
             }
         }
         catch (IOException ex) {

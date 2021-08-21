@@ -1,7 +1,8 @@
 package com.company;
 
-public class Place  implements Comparable<Place>{
+import java.util.Objects;
 
+public class Place  implements Comparable<Place>{
     private long code;
     private String status;
     private String name;
@@ -27,6 +28,21 @@ public class Place  implements Comparable<Place>{
 
     public String getStatus() {
         return status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Place place = (Place) o;
+        return code == place.code &&
+                status.equals(place.status) &&
+                name.equals(place.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, status, name);
     }
 
     @Override

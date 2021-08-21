@@ -48,4 +48,19 @@ public class OktmoTest {
         Matcher mather = reg.matcher("Жтово");
         assertTrue(mather.find());
     }
+
+    @Test
+    public void oktmoTestTwoMethod() {
+        OktmoData place = new OktmoData();
+        new OktmoReader().readPlaces("data-20210701-structure-20150128.csv", place);
+
+        OktmoData placeReg = new OktmoData();
+        new OktmoReader().readPlacesReg("data-20210701-structure-20150128.csv", placeReg);
+
+        assertTrue(place.getPlaces().equals(placeReg.getPlaces()));
+        System.out.println("Количество НП при чтении без регулярного выражения = " + place.getPlaces().size() +
+                "\nколичество НП при чтении с регулярным выражением = " + placeReg.getPlaces().size());
+
+
+    }
 }
