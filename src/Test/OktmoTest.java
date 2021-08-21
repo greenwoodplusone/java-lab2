@@ -20,17 +20,32 @@ public class OktmoTest {
         assertEquals(place.getStatusPlace(10), "с");
 
         // Проверка на последний населенный пункт
-        assertEquals(place.getNamePlace(place.getCountPlaces() - 1), "Лумку-Корань");
-        assertEquals(place.getCodePlace(place.getCountPlaces() - 1), 99_630_440_116L);
-        assertEquals(place.getStatusPlace(place.getCountPlaces() - 1), "ст");
+        assertEquals(place.getNamePlace(place.getCountPlaces() - 1), "Биробиджан");
+        assertEquals(place.getCodePlace(place.getCountPlaces() - 1), 99_701_000_001L);
+        assertEquals(place.getStatusPlace(place.getCountPlaces() - 1), "г");
 
-        Pattern re2 = Pattern.compile("еТ", Pattern.CASE_INSENSITIVE);
-        Matcher m2 = re2.matcher("ПРивеТ");
-        System.out.println(m2.find());
+        Pattern reg = Pattern.compile("^[А-Я].?ово$", Pattern.CASE_INSENSITIVE);
+        Matcher mather = reg.matcher("Жтово");
+        assertTrue(mather.find());
+    }
 
-        Pattern reg = Pattern.compile(".?.?ово,", Pattern.CASE_INSENSITIVE);
-        Matcher mather = reg.matcher("Жтово,");
+    @Test
+    public void oktmoTestReg() {
+        OktmoData place = new OktmoData();
+        new OktmoReader().readPlacesReg("data-20210701-structure-20150128.csv", place);
 
-        System.out.println(mather.find());
+        // Проверка на 10 населенный пункт
+        assertEquals(place.getNamePlace(10), "Боровское");
+        assertEquals(place.getCodePlace(10), 1_601_417_101L);
+        assertEquals(place.getStatusPlace(10), "с");
+
+        // Проверка на последний населенный пункт
+        assertEquals(place.getNamePlace(place.getCountPlaces() - 1), "Биробиджан");
+        assertEquals(place.getCodePlace(place.getCountPlaces() - 1), 99_701_000_001L);
+        assertEquals(place.getStatusPlace(place.getCountPlaces() - 1), "г");
+
+        Pattern reg = Pattern.compile("^[А-Я].?ово$", Pattern.CASE_INSENSITIVE);
+        Matcher mather = reg.matcher("Жтово");
+        assertTrue(mather.find());
     }
 }

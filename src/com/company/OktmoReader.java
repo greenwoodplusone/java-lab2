@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class OktmoReader {
 
@@ -24,48 +26,93 @@ public class OktmoReader {
 
                 String [] q= s.split(";");
                 StringBuilder codeStr = new StringBuilder("");
+
+                if (q[3].replace("\"", "").equals("000")) {
+                    continue;
+                }
+
                 for (int i = 0; i < 4; i++) {
                     String symbol = q[i].replace("\"", "");
-                    if (Integer.parseInt(symbol) == 0) {
-                        codeStr.setLength(0);
-                        break;
-                    } else {
-                        codeStr.append(symbol);
-                    }
+                    codeStr.append(symbol);
                 }
 
                 // Парсинг сток и запись в список
 
-                if (codeStr.length() > 0) {
-                    Long code = 0L;
-                    String status = "";
-                    String name = "";
-                    try {
-                        // Преобразование кода в Long
-                        code = Long.parseLong(codeStr.toString());
+                Long code = 0L;
+                String status = "";
+                String name = "";
+                try {
+                    // Преобразование кода в Long
+                    code = Long.parseLong(codeStr.toString());
 
-                        int indexSplit = q[6].indexOf(" ");
-                        // || !q[6].startsWith("[А-Я]")
-                        status = indexSplit != -1 ? q[6].substring(1, indexSplit) : "Статус неопределен";
-                        name = indexSplit != -1 ? q[6].substring(indexSplit + 1, q[6].length() - 1)  : "Статус неопределен";
+                    int indexSplit = q[6].indexOf(" ");
+                    // || !q[6].startsWith("[А-Я]")
+                    status = indexSplit != -1 ? q[6].substring(1, indexSplit) : "Статус неопределен";
+                    name = indexSplit != -1 ? q[6].substring(indexSplit + 1, q[6].length() - 1)  : "Статус неопределен";
 
-                        Place newPlace = new Place(code, status, name);
-                        data.addPlace(newPlace, status);
+                    Place newPlace = new Place(code, status, name);
+                    data.addPlace(newPlace, status);
 
-                        // Добавление статуса в карту статусов
-                        OktmoAnalyzer.fillingMapStatuses(status);
+                    // Добавление статуса в карту статусов
+                    OktmoAnalyzer.fillingMapStatuses(status);
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
 
-                        System.out.println("Ошибка в сроке файла №" + lineCount);
-                        System.out.println("code = " + code);
-                        System.out.println("name = " + name);
-                        System.out.println("status = " + status);
-                    }
+                    System.out.println("Ошибка в сроке файла №" + lineCount);
+                    System.out.println("code = " + code);
+                    System.out.println("name = " + name);
+                    System.out.println("status = " + status);
                 }
 
-//                if (lineCount==20000) break; // для проверки сортировки
+//                if (lineCount==20) break; // для проверки сортировки
+            }
+        }
+        catch (IOException ex) {
+            System.out.println("Reading error in line "+lineCount);
+            ex.printStackTrace();
+        }
+    }
+
+    public void readPlacesReg(String fileName, OktmoData data) {
+        int lineCount=0;
+
+        try ( BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream(fileName)
+                        , "cp1251")
+        )
+        ) {
+            String s;
+            while ((s=br.readLine()) !=null ) { // пока readLine() возвращает не null
+                lineCount++;
+
+                Pattern reg = Pattern.compile(OktmoMain.REG);
+                Matcher matcher = reg.matcher(s);
+
+                Long code = 0L;
+                String status = "";
+                String name = "";
+                StringBuilder codeStr;
+                if (matcher.find()) {
+                    codeStr = new StringBuilder("");
+                    codeStr.append(matcher.group(1));
+                    codeStr.append(matcher.group(2));
+                    codeStr.append(matcher.group(3));
+                    codeStr.append(matcher.group(4));
+
+                    code = Long.parseLong(codeStr.toString());
+                    status = matcher.group(5);
+                    name = matcher.group(6);
+
+                    Place newPlace = new Place(code, status, name);
+                    data.addPlace(newPlace, status);
+
+                    // Добавление статуса в карту статусов
+                    OktmoAnalyzer.fillingMapStatuses(status);
+                }
+
+//                if (lineCount==20) break; // для проверки сортировки
             }
         }
         catch (IOException ex) {

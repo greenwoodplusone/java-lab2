@@ -3,16 +3,20 @@ package com.company;
 import java.util.regex.*;
 
 public class OktmoMain {
-    final private static String ONE_REG = "^[А-Я].?ово$";
+    final public static String ONE_REG = "^[А-Я].?ово$";
 
     //\\S заменить на . если хотим учитывать названия из  нескольки слов
-    final private static String TWO_REG = "^([^ауоиэыяюеё])\\S*\\1$";
+    final public static String TWO_REG = "^([^ауоиэыяюеё])\\S*\\1$";
+
+    final public static String REG =
+            "(\\d\\d).*?(\\d\\d\\d).*?(\\d\\d\\d).*?(?!000)(\\d\\d\\d).*?([a-я]+) ([a-я- \\d()]+)";
 
     public static void main(String[] args) {
         OktmoData place = new OktmoData();
-        new OktmoReader().readPlaces("data-20210701-structure-20150128.csv", place);
+//        new OktmoReader().readPlaces("data-20210701-structure-20150128.csv", place);
+        new OktmoReader().readPlacesReg("data-20210701-structure-20150128.csv", place);
 
-        //place.printAllPlaces(); // Показ несортированного списка
+//        place.printAllPlaces(); // Показ несортированного списка
         place.printSortedPlaces(); // Показ сортированного списка
 
         System.out.println("\nСписок статусов:\n" + place.allStatuses()); // Вывод списка статусов
