@@ -13,16 +13,15 @@ public class OKTMOGroup {
     private OktmoLevel level;
     private String name;
     private Long code;
-    private ArrayList<OKTMOGroup> oktmoGroupList;
 
-    private ArrayList<Place> places;
+    // Вложенная группа
+    private ArrayList<Place> places = new ArrayList<Place>();
+    private ArrayList<OKTMOGroup> oktmoGroupList = new ArrayList<OKTMOGroup>();
 
     public OKTMOGroup(OktmoLevel level, String name, Long code) {
         this.level = level;
         this.name = name;
         this.code = code;
-        this.oktmoGroupList = new ArrayList<OKTMOGroup>();
-        this.places = new ArrayList<Place>();
     }
 
     public ArrayList<Place> getPlaces() {
@@ -38,7 +37,11 @@ public class OKTMOGroup {
      *
      * @param oktmoGroup
      */
-    public void addOKTMOGroup (OKTMOGroup oktmoGroup) {
+    public void addOktmoGroupMap(OktmoData data, Long code, OKTMOGroup oktmoGroup) {
+        data.getOktmoGroupMap().put(code, oktmoGroup);
+    }
+
+    public void addOktmoGroupList(OKTMOGroup oktmoGroup) {
         oktmoGroupList.add(oktmoGroup);
     }
 

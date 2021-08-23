@@ -9,17 +9,11 @@ public class OktmoMain {
     final public static String TWO_REG = "^([^ауоиэыяюеё])\\S*\\1$";
 
     // регулярное выражение для поиска НП
-    final public static String REG_PLACE =
-            "(\\d\\d).*?(\\d\\d\\d).*?(\\d\\d\\d).*?(?!000)(\\d\\d\\d).?;\"\\d\";\"\\d\";\"(([1-9-/.а-я]+)\\s)?(((\"*)[^;\"]+\\9)+)";
+    final public static String PLACE_REG =
+            "\"(\\d\\d)\";\"(\\d\\d\\d)\";\"(\\d\\d\\d)\";\"(?!000)(\\d\\d\\d)\";\"\\d\";\"\\d\";\"(([1-9-/.а-я]+)\\s)?(((\"*)[^;\"]+\\9)+)\"";
 
-    final public static String REGION_REG =
-            "(\\d\\d).*?\"(000)\".*?\"(000)\".*?\"(000)\".?;\"\\d\";\"\\d\";\"(Населенные пункты, входящие в состав ((\"*)[^;\"]+\\7)+)";
-
-    final public static String DISTRICT_OR_CITY =
-            "(\\d\\d).*?(?!000)(\\d\\d\\d).*?\"(000)\".*?\"(000)\".?;\"\\d\";\"\\d\";\"(([1-9-/.а-я]+)\\s)?(((\"*)[^;\"]+\\9)+)";
-
-    final public static String VILLAGE_COUNCIL =
-            "(\\d\\d).*?(?!000)(\\d\\d\\d).*?(?!000)(\\d\\d\\d).*?\"(000)\".?;\"\\d\";\"\\d\";\"(([1-9-/.а-я]+)\\s)?(((\"*)[^;\"]+\\9)+)";
+    final public static String GROUP_REG =
+            "\"(\\d\\d)\";\"(\\d\\d\\d)\";\"(\\d\\d\\d)\";\"(000)\";\"\\d\";\"\\d\";\"(((\"*)[^;\"]+\\7)+)\"";
 
     public static void main(String[] args) {
         OktmoData place = new OktmoData();

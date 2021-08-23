@@ -90,11 +90,10 @@ public class OktmoReader {
         )
         ) {
             String s;
-            Pattern reg = Pattern.compile(OktmoMain.REG_PLACE);
+            Pattern reg = Pattern.compile(OktmoMain.PLACE_REG);
 
             while ((s=br.readLine()) !=null ) { // пока readLine() возвращает не null
                 lineCount++;
-
 
                 Matcher matcher = reg.matcher(s);
 
@@ -102,6 +101,7 @@ public class OktmoReader {
                 String status = "";
                 String name = "";
                 StringBuilder codeStr;
+
                 if (matcher.find()) {
                     codeStr = new StringBuilder("");
                     codeStr.append(matcher.group(1));
@@ -142,30 +142,29 @@ public class OktmoReader {
             OKTMOGroup oktmoGroupDistrictOrCity = null;
             OKTMOGroup oktmoGroupVillageCouncil = null;
 
-            String s;
-            while ((s = br.readLine()) !=null ) { // пока readLine() возвращает не null
+            Pattern reg = Pattern.compile(OktmoMain.GROUP_REG);
+            Pattern regPlace = Pattern.compile(OktmoMain.PLACE_REG);
+            Matcher matcher;
+
+            String str;
+            StringBuilder codeStr = new StringBuilder("");
+
+            while ((str = br.readLine()) !=null ) { // пока readLine() возвращает не null
                 lineCount++;
 
-                Pattern regRegion = Pattern.compile(OktmoMain.REGION_REG);
-                Pattern regDistrictOrCity = Pattern.compile(OktmoMain.DISTRICT_OR_CITY);
-                Pattern regVillageCouncil = Pattern.compile(OktmoMain.VILLAGE_COUNCIL);
-                Pattern regRegPlace = Pattern.compile(OktmoMain.REG_PLACE);
-
-                Matcher matcher;
+                matcher = reg.matcher(str);
                 Long code = 0L;
                 String name = "";
                 String status = "";
                 OktmoLevel level;
+                codeStr.setLength(0);
 
-                if (regRegion.matcher(s).find()) {
-                    level = OktmoLevel.REGION;
+                if (matcher.find()) {
 
-                    matcher = regRegion.matcher(s);
+                    if (matcher.group(2).equals("000") && matcher.group(3).equals("000") &&
+                            matcher.group(4).equals("000") && matcher.group(5).startsWith("Населенные пункты")) {
+                        level = OktmoLevel.REGION;
 
-                    StringBuilder codeStr;
-
-                    if (matcher.find()) {
-                        codeStr = new StringBuilder("");
                         codeStr.append(matcher.group(1));
                         codeStr.append(matcher.group(2));
                         codeStr.append(matcher.group(3));
@@ -175,45 +174,39 @@ public class OktmoReader {
                         name = matcher.group(5);
 
                         oktmoGroupRegion = new OKTMOGroup(level, name, code);
+                        oktmoGroupRegion.addOktmoGroupMap(data, code, oktmoGroupRegion);
+
+                        // Вложенная группа списка
                         data.addOktmoGroupList(oktmoGroupRegion);
+
+                        continue;
                     }
 
-                    continue;
-                }
+                    if (!matcher.group(2).equals("000") && matcher.group(3).equals("000") &&
+                            matcher.group(4).equals("000")) {
+                        level = OktmoLevel.DISTRICT_OR_CITY;
 
-                if (regDistrictOrCity.matcher(s).find()) {
-                    level = OktmoLevel.DISTRICT_OR_CITY;
-
-                    matcher = regDistrictOrCity.matcher(s);
-
-                    StringBuilder codeStr;
-
-                    if (matcher.find()) {
-                        codeStr = new StringBuilder("");
                         codeStr.append(matcher.group(1));
                         codeStr.append(matcher.group(2));
                         codeStr.append(matcher.group(3));
                         codeStr.append(matcher.group(4));
 
                         code = Long.parseLong(codeStr.toString());
-                        name = matcher.group(7);
+                        name = matcher.group(5);
 
                         oktmoGroupDistrictOrCity = new OKTMOGroup(level, name, code);
-                        oktmoGroupRegion.addOKTMOGroup(oktmoGroupDistrictOrCity);
+                        oktmoGroupDistrictOrCity.addOktmoGroupMap(data, code, oktmoGroupRegion);
+
+                        // Вложенная группа списка
+                        oktmoGroupRegion.addOktmoGroupList(oktmoGroupDistrictOrCity);
+
+                        continue;
                     }
 
-                    continue;
-                }
+                    if (!matcher.group(2).equals("000") && !matcher.group(3).equals("000") &&
+                            matcher.group(4).equals("000")  && matcher.group(5).startsWith("Населенные пункты")) {
+                        level = OktmoLevel.VILLAGE_COUNCIL;
 
-                if (regVillageCouncil.matcher(s).find()) {
-                    level = OktmoLevel.VILLAGE_COUNCIL;
-
-                    matcher = regVillageCouncil.matcher(s);
-
-                    StringBuilder codeStr;
-
-                    if (matcher.find()) {
-                        codeStr = new StringBuilder("");
                         codeStr.append(matcher.group(1));
                         codeStr.append(matcher.group(2));
                         codeStr.append(matcher.group(3));
@@ -223,41 +216,35 @@ public class OktmoReader {
                         name = matcher.group(5);
 
                         oktmoGroupVillageCouncil = new OKTMOGroup(level, name, code);
-                        oktmoGroupDistrictOrCity.addOKTMOGroup(oktmoGroupVillageCouncil);
-                    }
+                        oktmoGroupVillageCouncil.addOktmoGroupMap(data, code, oktmoGroupRegion);
 
-                    continue;
+                        // Вложенная группа списка
+                        oktmoGroupDistrictOrCity.addOktmoGroupList(oktmoGroupVillageCouncil);
+
+                        continue;
+                    }
                 }
 
-                if (regRegPlace.matcher(s).find()) {
+                matcher = regPlace.matcher(str);
+//
+                if (matcher.find()) {
                     level = OktmoLevel.PLACE;
 
-                    matcher = regRegPlace.matcher(s);
+                    codeStr = new StringBuilder("");
+                    codeStr.append(matcher.group(1));
+                    codeStr.append(matcher.group(2));
+                    codeStr.append(matcher.group(3));
+                    codeStr.append(matcher.group(4));
 
-                    StringBuilder codeStr;
+                    code = Long.parseLong(codeStr.toString());
+                    status = matcher.group(6) != null ? matcher.group(6) : "Нет статуса";
+                    name = matcher.group(7);
 
-                    if (matcher.find()) {
-                        codeStr = new StringBuilder("");
-                        codeStr.append(matcher.group(1));
-                        codeStr.append(matcher.group(2));
-                        codeStr.append(matcher.group(3));
-                        codeStr.append(matcher.group(4));
-
-                        code = Long.parseLong(codeStr.toString());
-                        status = matcher.group(6) != null ? matcher.group(6) : "Нет статуса";
-                        name = matcher.group(7);
-
-
-                        Place newPlace = new Place(code, status, name);
-                        data.addPlace(newPlace, status);
-                        oktmoGroupVillageCouncil.addPlace(newPlace);
-
-                        // Добавление статуса в карту статусов
-                        OktmoAnalyzer.fillingMapStatuses(status);
-                    }
+                    Place newPlace = new Place(code, status, name);
+                    oktmoGroupVillageCouncil.addPlace(newPlace);
                 }
 
-                if (lineCount == 50) break; // для проверки сортировки
+//                if (lineCount == 50) break; // для проверки сортировки
             }
         }
         catch (IOException ex) {

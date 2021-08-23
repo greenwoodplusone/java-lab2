@@ -8,9 +8,9 @@ public class OktmoData{
     private HashSet<String> allStatuses;
     private ArrayList<Place> sortedPlaces;
 
+    // Коллекции по группам
     private ArrayList<OKTMOGroup> oktmoGroupList = new ArrayList<OKTMOGroup>();
     private TreeMap<Long, OKTMOGroup> oktmoGroupMap = new TreeMap<Long, OKTMOGroup>();
-    private TreeMap<Long,Place> placeMap;
 
     public OktmoData() {
         this.places = new ArrayList<Place>();
@@ -28,32 +28,51 @@ public class OktmoData{
         allStatuses.add(status);
     }
 
-    public void addOktmoGroupMap(Long code, OKTMOGroup oktmoGroup) {
-        oktmoGroupMap.put(code, oktmoGroup);
-    }
-
     public void addOktmoGroupList(OKTMOGroup oktmoGroup) {
         oktmoGroupList.add(oktmoGroup);
     }
 
+    public ArrayList<OKTMOGroup> getOktmoGroupList() {
+        return oktmoGroupList;
+    }
+
+    public TreeMap<Long, OKTMOGroup> getOktmoGroupMap() {
+        return oktmoGroupMap;
+    }
+
     public void printCountGroup() {
-        System.out.println("Количество регионов: " + oktmoGroupList.size());
+
+        int countDistrictOrCity = 0;
+        int countVillageCouncil = 0;
+        int countPlace = 0;
 
         for (OKTMOGroup oktmoGroupRegion : oktmoGroupList) {
             System.out.println("|___ Регион \"" + oktmoGroupRegion.getName() + "\" включает: "  +
                     oktmoGroupRegion.getOktmoGroupList().size() + " района или города");
+            countDistrictOrCity += oktmoGroupRegion.getOktmoGroupList().size();
 
             for (OKTMOGroup oktmoGroupDistrictOrCity : oktmoGroupRegion.getOktmoGroupList()) {
                 System.out.println("|___\n|___ |___ Район или город \"" + oktmoGroupDistrictOrCity.getName() +
                         "\" включает: "  + oktmoGroupDistrictOrCity.getOktmoGroupList().size() + " сельсоветов");
 
+                countVillageCouncil += oktmoGroupDistrictOrCity.getOktmoGroupList().size();
 
                 for (OKTMOGroup oktmoVillageCouncil : oktmoGroupDistrictOrCity.getOktmoGroupList()) {
                     System.out.println("|___\n|___ |___\n|___ |___ |___ Cельсовет \"" + oktmoVillageCouncil.getName() +
-                            "\" включает: "  + oktmoVillageCouncil.getOktmoGroupList().size() + " НП");
+                            "\" включает: "  + oktmoVillageCouncil.getPlaces().size() + " НП");
+
+                    countPlace += oktmoVillageCouncil.getPlaces().size();
                 }
+
             }
         }
+
+        System.out.println("");
+        System.out.println("Количество регионов: " + oktmoGroupList.size());
+        System.out.println("Количество районов или городов: " + countDistrictOrCity);
+        System.out.println("Количество сельсоветов: " + countVillageCouncil);
+        System.out.println("Количество НП: " + countPlace);
+
     }
 
     /**
