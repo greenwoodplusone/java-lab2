@@ -8,6 +8,11 @@ import java.util.regex.Pattern;
 
 public class OktmoAnalyzer {
     private static HashMap<String, Integer> mapStatuses = new HashMap<String, Integer>();
+    private static ArrayList<String> placesGivenTheExpression;
+
+    public static ArrayList<String> getPlacesGivenTheExpression() {
+        return placesGivenTheExpression;
+    }
 
     /**
      * Заполнение карты статусов
@@ -39,7 +44,7 @@ public class OktmoAnalyzer {
      * @param regexr
      * @return
      */
-    public static HashSet<String> placesGivenTheExpression(OktmoData place, String regexr) {
+    public static ArrayList<String> placesGivenTheExpression(OktmoData place, String regexr) {
         return placesGivenTheExpression(place, regexr, false);
     }
 
@@ -50,8 +55,8 @@ public class OktmoAnalyzer {
      * @param regexr
      * @return
      */
-    public static HashSet<String> placesGivenTheExpression(OktmoData place, String regexr, boolean ignoreСase) {
-        HashSet<String> placesGivenTheExpression = new HashSet<String>();
+    public static ArrayList<String> placesGivenTheExpression(OktmoData place, String regexr, boolean ignoreСase) {
+        placesGivenTheExpression = new ArrayList<String>();
 
         for (Place thisPlace : place.getPlaces()) {
 
@@ -73,5 +78,4 @@ public class OktmoAnalyzer {
 
         return placesGivenTheExpression;
     }
-
 }

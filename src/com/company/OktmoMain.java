@@ -8,13 +8,14 @@ public class OktmoMain {
     //\\S заменить на . если хотим учитывать названия из  нескольки слов
     final public static String TWO_REG = "^([^ауоиэыяюеё])\\S*\\1$";
 
+    // регулярное выражение для поиска НП
     final public static String REG =
-            "(\\d\\d).*?(\\d\\d\\d).*?(\\d\\d\\d).*?(?!000)(\\d\\d\\d).*?([1-9]?[-/.a-я]+)\\s(((\"*)[/.,ёA-Z№a-я-\\s\\d()]+\\8)+)";
+            "(\\d\\d).*?(\\d\\d\\d).*?(\\d\\d\\d).*?(?!000)(\\d\\d\\d).?;\"\\d\";\"\\d\";\"(([1-9-/.а-я]+)\\s)?(((\"*)[^;\"]+\\9)+)";
 
     public static void main(String[] args) {
         OktmoData place = new OktmoData();
-//        new OktmoReader().readPlaces("data-20210701-structure-20150128.csv", place);
-        new OktmoReader().readPlacesReg("data-20210701-structure-20150128.csv", place);
+        new OktmoReader().readPlaces("data-20210701-structure-20150128.csv", place);
+//        new OktmoReader().readPlacesReg("data-20210701-structure-20150128.csv", place);
 
 //        place.printAllPlaces(); // Показ несортированного списка
         place.printSortedPlaces(); // Показ сортированного списка
@@ -27,10 +28,12 @@ public class OktmoMain {
 
 
         // РЕГУЛЯРНЫЕ ВЫРАЖЕНИЯ
-        System.out.println("\nСписок всех НП, название которых содержит меньше 6 букв и заканчиваются на -ово:\n" +
-                OktmoAnalyzer.placesGivenTheExpression(place, ONE_REG));
+        System.out.println("\nСписок всех НП, название которых содержит меньше 6 букв и заканчиваются на -ово (" +
+                OktmoAnalyzer.placesGivenTheExpression(place, ONE_REG)  +
+                "\n" + OktmoAnalyzer.getPlacesGivenTheExpression().size() + " шт.");
 
         System.out.println("\nСписок всех НП, которые начинаются и заканчиваются на одну и ту же согласную букву:\n" +
-                OktmoAnalyzer.placesGivenTheExpression(place, TWO_REG, true));
+                OktmoAnalyzer.placesGivenTheExpression(place, TWO_REG, true) +
+                        "\n" + OktmoAnalyzer.getPlacesGivenTheExpression().size() + " шт.");
     }
 }

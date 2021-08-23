@@ -13,10 +13,10 @@ public class OktmoReader {
         int lineCount=0;
 
         try ( BufferedReader br = new BufferedReader(
-                        new InputStreamReader(
-                                new FileInputStream(fileName)
-                                , "cp1251")
-                )
+                new InputStreamReader(
+                        new FileInputStream(fileName)
+                        , "cp1251")
+        )
         ) {
             String s;
             while ((s=br.readLine()) !=null ) { // пока readLine() возвращает не null
@@ -45,17 +45,16 @@ public class OktmoReader {
                     // Преобразование кода в Long
                     code = Long.parseLong(codeStr.toString());
 
-                    int indexSplit = q[6].indexOf(" ");
+                    // Проверка на наличие статуса
+                    if (Character.isUpperCase(q[6].charAt(1))) {
+                        status = "Нет статуса";
+                        name = q[6].substring(1, q[6].length() - 1);
+                    } else {
+                        int indexSplit = q[6].indexOf(" ");
 
-                    // Данный блок кода добавлен из-за одного населенного пункта:
-                    // "94";"604";"420";"171";"8";"2";"Балезино-3";;;"000";"0";14.06.2013;01.01.2014
-                    // у него не прописан статус НП
-                    if (indexSplit == -1) {
-                        continue;
+                        status = indexSplit != -1 ? q[6].substring(1, indexSplit) : "Нет статуса";
+                        name = indexSplit != -1 ? q[6].substring(indexSplit + 1, q[6].length() - 1)  : q[6].substring(1, q[6].length() - 1);
                     }
-
-                    status = indexSplit != -1 ? q[6].substring(1, indexSplit) : "Нет статуса";
-                    name = indexSplit != -1 ? q[6].substring(indexSplit + 1, q[6].length() - 1)  : q[6].substring(1, q[6].length() - 1);
 
                     Place newPlace = new Place(code, status, name);
                     data.addPlace(newPlace, status);
@@ -109,8 +108,8 @@ public class OktmoReader {
                     codeStr.append(matcher.group(4));
 
                     code = Long.parseLong(codeStr.toString());
-                    status = matcher.group(5);
-                    name = matcher.group(6);
+                    status = matcher.group(6) != null ? matcher.group(6) : "Нет статуса";
+                    name = matcher.group(7);
 
                     Place newPlace = new Place(code, status, name);
                     data.addPlace(newPlace, status);
