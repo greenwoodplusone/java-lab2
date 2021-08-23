@@ -1,14 +1,16 @@
 package com.company;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.*;
 
 public class OktmoData{
 
     private ArrayList<Place> places;
     private HashSet<String> allStatuses;
     private ArrayList<Place> sortedPlaces;
+
+    private ArrayList<OKTMOGroup> oktmoGroupList = new ArrayList<OKTMOGroup>();
+    private TreeMap<Long, OKTMOGroup> oktmoGroupMap = new TreeMap<Long, OKTMOGroup>();
+    private TreeMap<Long,Place> placeMap;
 
     public OktmoData() {
         this.places = new ArrayList<Place>();
@@ -24,6 +26,34 @@ public class OktmoData{
     public void addPlace(Place place, String status) {
         places.add(place);
         allStatuses.add(status);
+    }
+
+    public void addOktmoGroupMap(Long code, OKTMOGroup oktmoGroup) {
+        oktmoGroupMap.put(code, oktmoGroup);
+    }
+
+    public void addOktmoGroupList(OKTMOGroup oktmoGroup) {
+        oktmoGroupList.add(oktmoGroup);
+    }
+
+    public void printCountGroup() {
+        System.out.println("Количество регионов: " + oktmoGroupList.size());
+
+        for (OKTMOGroup oktmoGroupRegion : oktmoGroupList) {
+            System.out.println("|___ Регион \"" + oktmoGroupRegion.getName() + "\" включает: "  +
+                    oktmoGroupRegion.getOktmoGroupList().size() + " района или города");
+
+            for (OKTMOGroup oktmoGroupDistrictOrCity : oktmoGroupRegion.getOktmoGroupList()) {
+                System.out.println("|___\n|___ |___ Район или город \"" + oktmoGroupDistrictOrCity.getName() +
+                        "\" включает: "  + oktmoGroupDistrictOrCity.getOktmoGroupList().size() + " сельсоветов");
+
+
+                for (OKTMOGroup oktmoVillageCouncil : oktmoGroupDistrictOrCity.getOktmoGroupList()) {
+                    System.out.println("|___\n|___ |___\n|___ |___ |___ Cельсовет \"" + oktmoVillageCouncil.getName() +
+                            "\" включает: "  + oktmoVillageCouncil.getOktmoGroupList().size() + " НП");
+                }
+            }
+        }
     }
 
     /**

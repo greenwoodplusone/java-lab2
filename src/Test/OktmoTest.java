@@ -61,6 +61,10 @@ public class OktmoTest {
         System.out.println("Количество НП при чтении без регулярного выражения = " + place.getPlaces().size() +
                 "\nколичество НП при чтении с регулярным выражением = " + placeReg.getPlaces().size());
 
+        Pattern re1 = Pattern.compile(".+");
+        String s = "dhgfg ghjgsj h jhwg wejkhgwe";
+        Matcher m = re1.matcher(s);
+        assertFalse(m.matches());
 
     }
 }

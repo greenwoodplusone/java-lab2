@@ -90,10 +90,12 @@ public class OktmoReader {
         )
         ) {
             String s;
+            Pattern reg = Pattern.compile(OktmoMain.REG_PLACE);
+
             while ((s=br.readLine()) !=null ) { // пока readLine() возвращает не null
                 lineCount++;
 
-                Pattern reg = Pattern.compile(OktmoMain.REG);
+
                 Matcher matcher = reg.matcher(s);
 
                 Long code = 0L;
@@ -119,6 +121,143 @@ public class OktmoReader {
                 }
 
 //                if (lineCount == 50) break; // для проверки сортировки
+            }
+        }
+        catch (IOException ex) {
+            System.out.println("Reading error in line "+lineCount);
+            ex.printStackTrace();
+        }
+    }
+
+    public void readPlacesGroup(String fileName, OktmoData data) {
+        int lineCount=0;
+
+        try ( BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream(fileName)
+                        , "cp1251")
+        )
+        ) {
+            OKTMOGroup oktmoGroupRegion = null;
+            OKTMOGroup oktmoGroupDistrictOrCity = null;
+            OKTMOGroup oktmoGroupVillageCouncil = null;
+
+            String s;
+            while ((s = br.readLine()) !=null ) { // пока readLine() возвращает не null
+                lineCount++;
+
+                Pattern regRegion = Pattern.compile(OktmoMain.REGION_REG);
+                Pattern regDistrictOrCity = Pattern.compile(OktmoMain.DISTRICT_OR_CITY);
+                Pattern regVillageCouncil = Pattern.compile(OktmoMain.VILLAGE_COUNCIL);
+                Pattern regRegPlace = Pattern.compile(OktmoMain.REG_PLACE);
+
+                Matcher matcher;
+                Long code = 0L;
+                String name = "";
+                String status = "";
+                OktmoLevel level;
+
+                if (regRegion.matcher(s).find()) {
+                    level = OktmoLevel.REGION;
+
+                    matcher = regRegion.matcher(s);
+
+                    StringBuilder codeStr;
+
+                    if (matcher.find()) {
+                        codeStr = new StringBuilder("");
+                        codeStr.append(matcher.group(1));
+                        codeStr.append(matcher.group(2));
+                        codeStr.append(matcher.group(3));
+                        codeStr.append(matcher.group(4));
+
+                        code = Long.parseLong(codeStr.toString());
+                        name = matcher.group(5);
+
+                        oktmoGroupRegion = new OKTMOGroup(level, name, code);
+                        data.addOktmoGroupList(oktmoGroupRegion);
+                    }
+
+                    continue;
+                }
+
+                if (regDistrictOrCity.matcher(s).find()) {
+                    level = OktmoLevel.DISTRICT_OR_CITY;
+
+                    matcher = regDistrictOrCity.matcher(s);
+
+                    StringBuilder codeStr;
+
+                    if (matcher.find()) {
+                        codeStr = new StringBuilder("");
+                        codeStr.append(matcher.group(1));
+                        codeStr.append(matcher.group(2));
+                        codeStr.append(matcher.group(3));
+                        codeStr.append(matcher.group(4));
+
+                        code = Long.parseLong(codeStr.toString());
+                        name = matcher.group(7);
+
+                        oktmoGroupDistrictOrCity = new OKTMOGroup(level, name, code);
+                        oktmoGroupRegion.addOKTMOGroup(oktmoGroupDistrictOrCity);
+                    }
+
+                    continue;
+                }
+
+                if (regVillageCouncil.matcher(s).find()) {
+                    level = OktmoLevel.VILLAGE_COUNCIL;
+
+                    matcher = regVillageCouncil.matcher(s);
+
+                    StringBuilder codeStr;
+
+                    if (matcher.find()) {
+                        codeStr = new StringBuilder("");
+                        codeStr.append(matcher.group(1));
+                        codeStr.append(matcher.group(2));
+                        codeStr.append(matcher.group(3));
+                        codeStr.append(matcher.group(4));
+
+                        code = Long.parseLong(codeStr.toString());
+                        name = matcher.group(5);
+
+                        oktmoGroupVillageCouncil = new OKTMOGroup(level, name, code);
+                        oktmoGroupDistrictOrCity.addOKTMOGroup(oktmoGroupVillageCouncil);
+                    }
+
+                    continue;
+                }
+
+                if (regRegPlace.matcher(s).find()) {
+                    level = OktmoLevel.PLACE;
+
+                    matcher = regRegPlace.matcher(s);
+
+                    StringBuilder codeStr;
+
+                    if (matcher.find()) {
+                        codeStr = new StringBuilder("");
+                        codeStr.append(matcher.group(1));
+                        codeStr.append(matcher.group(2));
+                        codeStr.append(matcher.group(3));
+                        codeStr.append(matcher.group(4));
+
+                        code = Long.parseLong(codeStr.toString());
+                        status = matcher.group(6) != null ? matcher.group(6) : "Нет статуса";
+                        name = matcher.group(7);
+
+
+                        Place newPlace = new Place(code, status, name);
+                        data.addPlace(newPlace, status);
+                        oktmoGroupVillageCouncil.addPlace(newPlace);
+
+                        // Добавление статуса в карту статусов
+                        OktmoAnalyzer.fillingMapStatuses(status);
+                    }
+                }
+
+                if (lineCount == 50) break; // для проверки сортировки
             }
         }
         catch (IOException ex) {
