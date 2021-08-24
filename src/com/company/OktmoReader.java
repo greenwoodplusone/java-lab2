@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,14 +19,15 @@ public class OktmoReader {
                         , "cp1251")
         )
         ) {
-            String s;
-            while ((s=br.readLine()) !=null ) { // пока readLine() возвращает не null
+            String str;
+            StringBuilder codeStr = new StringBuilder("");
+            while ((str=br.readLine()) !=null ) { // пока readLine() возвращает не null
                 lineCount++;
 
                 // Проверка кода на наличие нулевых значение
 
-                String [] q= s.split(";");
-                StringBuilder codeStr = new StringBuilder("");
+                String [] q= str.split(";");
+                codeStr.setLength(0);
 
                 if (q[3].replace("\"", "").equals("000")) {
                     continue;
@@ -89,18 +91,19 @@ public class OktmoReader {
                         , "cp1251")
         )
         ) {
-            String s;
+            String str;
+            StringBuilder codeStr = new StringBuilder("");
             Pattern reg = Pattern.compile(OktmoMain.PLACE_REG);
 
-            while ((s=br.readLine()) !=null ) { // пока readLine() возвращает не null
+            while ((str=br.readLine()) !=null ) { // пока readLine() возвращает не null
                 lineCount++;
 
-                Matcher matcher = reg.matcher(s);
+                Matcher matcher = reg.matcher(str);
 
                 Long code = 0L;
                 String status = "";
                 String name = "";
-                StringBuilder codeStr;
+                codeStr.setLength(0);
 
                 if (matcher.find()) {
                     codeStr = new StringBuilder("");
@@ -149,6 +152,8 @@ public class OktmoReader {
             String str;
             StringBuilder codeStr = new StringBuilder("");
 
+            Long codeUpLevel = 0L;
+
             while ((str = br.readLine()) !=null ) { // пока readLine() возвращает не null
                 lineCount++;
 
@@ -174,16 +179,18 @@ public class OktmoReader {
                         name = matcher.group(5);
 
                         oktmoGroupRegion = new OKTMOGroup(level, name, code);
-                        oktmoGroupRegion.addOktmoGroupMap(data, code, oktmoGroupRegion);
+                        data.getOktmoGroupMap().put(code, new TreeMap<Long, OKTMOGroup>());
 
                         // Вложенная группа списка
                         data.addOktmoGroupList(oktmoGroupRegion);
+
+                        codeUpLevel = code;
 
                         continue;
                     }
 
                     if (!matcher.group(2).equals("000") && matcher.group(3).equals("000") &&
-                            matcher.group(4).equals("000")) {
+                            matcher.group(4).equals("000") && !matcher.group(5).startsWith("Муниципальные районы")) {
                         level = OktmoLevel.DISTRICT_OR_CITY;
 
                         codeStr.append(matcher.group(1));
@@ -195,10 +202,12 @@ public class OktmoReader {
                         name = matcher.group(5);
 
                         oktmoGroupDistrictOrCity = new OKTMOGroup(level, name, code);
-                        oktmoGroupDistrictOrCity.addOktmoGroupMap(data, code, oktmoGroupRegion);
+                        data.getOktmoGroupMap().get(codeUpLevel).put(code, new TreeMap<Long, <OKTMOGroup>>());
 
                         // Вложенная группа списка
-                        oktmoGroupRegion.addOktmoGroupList(oktmoGroupDistrictOrCity);
+                        oktmoGroupRegion.addOktmoGroupInnerList(oktmoGroupDistrictOrCity);
+
+                        codeUpLevel = code;
 
                         continue;
                     }
@@ -216,10 +225,10 @@ public class OktmoReader {
                         name = matcher.group(5);
 
                         oktmoGroupVillageCouncil = new OKTMOGroup(level, name, code);
-                        oktmoGroupVillageCouncil.addOktmoGroupMap(data, code, oktmoGroupRegion);
+                        oktmoGroupVillageCouncil.addOktmoGroupInnerMap(code, new TreeMap<Long, OKTMOGroup>());
 
                         // Вложенная группа списка
-                        oktmoGroupDistrictOrCity.addOktmoGroupList(oktmoGroupVillageCouncil);
+                        oktmoGroupDistrictOrCity.addOktmoGroupInnerList(oktmoGroupVillageCouncil);
 
                         continue;
                     }
@@ -244,7 +253,7 @@ public class OktmoReader {
                     oktmoGroupVillageCouncil.addPlace(newPlace);
                 }
 
-//                if (lineCount == 50) break; // для проверки сортировки
+                if (lineCount == 50) break; // для проверки сортировки
             }
         }
         catch (IOException ex) {

@@ -44,8 +44,8 @@ public class OktmoAnalyzer {
      * @param regexr
      * @return
      */
-    public static ArrayList<String> placesGivenTheExpression(OktmoData place, String regexr) {
-        return placesGivenTheExpression(place, regexr, false);
+    public static ArrayList<String> getPlacesGivenTheExpression(OktmoData place, String regexr) {
+        return getPlacesGivenTheExpression(place, regexr, false);
     }
 
     /**
@@ -55,7 +55,7 @@ public class OktmoAnalyzer {
      * @param regexr
      * @return
      */
-    public static ArrayList<String> placesGivenTheExpression(OktmoData place, String regexr, boolean ignoreСase) {
+    public static ArrayList<String> getPlacesGivenTheExpression(OktmoData place, String regexr, boolean ignoreСase) {
         placesGivenTheExpression = new ArrayList<String>();
 
         for (Place thisPlace : place.getPlaces()) {

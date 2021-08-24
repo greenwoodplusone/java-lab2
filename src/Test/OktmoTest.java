@@ -30,7 +30,7 @@ public class OktmoTest {
     }
 
     @Test
-    public void oktmoTestReg() {
+    public void oktmoRegTest() {
         OktmoData place = new OktmoData();
         new OktmoReader().readPlacesReg("data-20210701-structure-20150128.csv", place);
 
@@ -50,7 +50,7 @@ public class OktmoTest {
     }
 
     @Test
-    public void oktmoTestTwoMethod() {
+    public void oktmoTwoMethodTest() {
         OktmoData place = new OktmoData();
         new OktmoReader().readPlaces("data-20210701-structure-20150128.csv", place);
 
@@ -60,5 +60,17 @@ public class OktmoTest {
         assertTrue(place.getPlaces().equals(placeReg.getPlaces()));
         System.out.println("Количество НП при чтении без регулярного выражения = " + place.getPlaces().size() +
                 "\nколичество НП при чтении с регулярным выражением = " + placeReg.getPlaces().size());
+    }
+
+    @Test
+    public void oktmoGroupTest() {
+        OktmoData placeGroup = new OktmoData();
+        new OktmoReader().readPlacesGroup("data-20210701-structure-20150128.csv", placeGroup);
+
+        System.out.println("START");
+        System.out.println(placeGroup.getOktmoGroupMap().keySet());
+
+//        assertEquals(placeGroup.getOktmoGroupMap().get(1_000_000_000L).get(1_601_000_000L), 5);
+
     }
 }

@@ -10,7 +10,8 @@ public class OktmoData{
 
     // Коллекции по группам
     private ArrayList<OKTMOGroup> oktmoGroupList = new ArrayList<OKTMOGroup>();
-    private TreeMap<Long, OKTMOGroup> oktmoGroupMap = new TreeMap<Long, OKTMOGroup>();
+    private TreeMap<Long, TreeMap <Long, TreeMap <Long, TreeMap <Long, OKTMOGroup>>>> oktmoGroupMap =
+            new TreeMap<Long, TreeMap <Long, TreeMap <Long, TreeMap <Long, OKTMOGroup>>>>();
 
     public OktmoData() {
         this.places = new ArrayList<Place>();
@@ -36,7 +37,7 @@ public class OktmoData{
         return oktmoGroupList;
     }
 
-    public TreeMap<Long, OKTMOGroup> getOktmoGroupMap() {
+    public TreeMap<Long, TreeMap<Long, OKTMOGroup>> getOktmoGroupMap() {
         return oktmoGroupMap;
     }
 

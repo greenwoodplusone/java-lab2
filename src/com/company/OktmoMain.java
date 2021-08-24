@@ -32,19 +32,19 @@ public class OktmoMain {
 
         // РЕГУЛЯРНЫЕ ВЫРАЖЕНИЯ
         System.out.println("\nСписок всех НП, название которых содержит меньше 6 букв и заканчиваются на -ово (" +
-                OktmoAnalyzer.placesGivenTheExpression(place, ONE_REG)  +
+                OktmoAnalyzer.getPlacesGivenTheExpression(place, ONE_REG)  +
                 "\n" + OktmoAnalyzer.getPlacesGivenTheExpression().size() + " шт.");
 
         System.out.println("\nСписок всех НП, которые начинаются и заканчиваются на одну и ту же согласную букву:\n" +
-                OktmoAnalyzer.placesGivenTheExpression(place, TWO_REG, true) +
+                OktmoAnalyzer.getPlacesGivenTheExpression(place, TWO_REG, true) +
                         "\n" + OktmoAnalyzer.getPlacesGivenTheExpression().size() + " шт.");
     }
 
     @Test
     public void placesGroup() {
-        OktmoData place = new OktmoData();
-        new OktmoReader().readPlacesGroup("data-20210701-structure-20150128.csv", place);
+        OktmoData placeGroup = new OktmoData();
+        new OktmoReader().readPlacesGroup("data-20210701-structure-20150128.csv", placeGroup);
 
-        place.printCountGroup();
+        placeGroup.printCountGroup();
     }
 }

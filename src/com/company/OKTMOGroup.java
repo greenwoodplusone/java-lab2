@@ -16,7 +16,8 @@ public class OKTMOGroup {
 
     // Вложенная группа
     private ArrayList<Place> places = new ArrayList<Place>();
-    private ArrayList<OKTMOGroup> oktmoGroupList = new ArrayList<OKTMOGroup>();
+    private ArrayList<OKTMOGroup> oktmoGroupInnerList = new ArrayList<OKTMOGroup>();
+    private TreeMap<Long, TreeMap<Long, OKTMOGroup>> oktmoGroupInnerMap = new TreeMap<Long, TreeMap<Long, OKTMOGroup>>();
 
     public OKTMOGroup(OktmoLevel level, String name, Long code) {
         this.level = level;
@@ -34,15 +35,21 @@ public class OKTMOGroup {
 
     /**
      * Добавление группы
-     *
-     * @param oktmoGroup
      */
-    public void addOktmoGroupMap(OktmoData data, Long code, OKTMOGroup oktmoGroup) {
-        data.getOktmoGroupMap().put(code, oktmoGroup);
+    public void addOktmoGroupMap(OktmoData data, Long code, TreeMap<Long, OKTMOGroup> oktmoGroupMap) {
+        data.getOktmoGroupMap().put(code, oktmoGroupMap);
     }
 
-    public void addOktmoGroupList(OKTMOGroup oktmoGroup) {
-        oktmoGroupList.add(oktmoGroup);
+    public void addOktmoGroupInnerList(OKTMOGroup oktmoGroup) {
+        oktmoGroupInnerList.add(oktmoGroup);
+    }
+
+    public void addOktmoGroupInnerMap(Long code, TreeMap<Long, OKTMOGroup> pOktmoGroupInnerMap) {
+        oktmoGroupInnerMap.put(code, pOktmoGroupInnerMap);
+    }
+
+    public TreeMap<Long, TreeMap<Long, OKTMOGroup>> getOktmoGroupInnerMap() {
+        return oktmoGroupInnerMap;
     }
 
     /**
@@ -55,6 +62,6 @@ public class OKTMOGroup {
     }
 
     public ArrayList<OKTMOGroup> getOktmoGroupList() {
-        return oktmoGroupList;
+        return oktmoGroupInnerList;
     }
 }
