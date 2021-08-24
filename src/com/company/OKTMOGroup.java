@@ -2,7 +2,7 @@ package com.company;
 
 import java.util.*;
 
-enum OktmoLevel {
+enum OKTMOLevel {
     REGION,
     DISTRICT_OR_CITY,
     VILLAGE_COUNCIL,
@@ -10,7 +10,7 @@ enum OktmoLevel {
 }
 
 public class OKTMOGroup {
-    private OktmoLevel level;
+    private OKTMOLevel level;
     private String name;
     private Long code;
 
@@ -19,7 +19,7 @@ public class OKTMOGroup {
     private ArrayList<OKTMOGroup> oktmoGroupInnerList = new ArrayList<OKTMOGroup>();
     private TreeMap<Long, TreeMap<Long, OKTMOGroup>> oktmoGroupInnerMap = new TreeMap<Long, TreeMap<Long, OKTMOGroup>>();
 
-    public OKTMOGroup(OktmoLevel level, String name, Long code) {
+    public OKTMOGroup(OKTMOLevel level, String name, Long code) {
         this.level = level;
         this.name = name;
         this.code = code;
@@ -29,6 +29,10 @@ public class OKTMOGroup {
         return places;
     }
 
+    public Long getCode() {
+        return code;
+    }
+
     public String getName() {
         return name;
     }
@@ -36,8 +40,8 @@ public class OKTMOGroup {
     /**
      * Добавление группы
      */
-    public void addOktmoGroupMap(OktmoData data, Long code, TreeMap<Long, OKTMOGroup> oktmoGroupMap) {
-        data.getOktmoGroupMap().put(code, oktmoGroupMap);
+    public void addOktmoGroupMap(OKTMOData data, Long code, OKTMOGroup pOktmoGroupMap) {
+        data.getOktmoGroupMap().put(code, pOktmoGroupMap);
     }
 
     public void addOktmoGroupInnerList(OKTMOGroup oktmoGroup) {
@@ -61,7 +65,7 @@ public class OKTMOGroup {
         places.add(place);
     }
 
-    public ArrayList<OKTMOGroup> getOktmoGroupList() {
+    public ArrayList<OKTMOGroup> getOktmoGroupInnerList() {
         return oktmoGroupInnerList;
     }
 }

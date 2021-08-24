@@ -4,13 +4,12 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OktmoReader {
+public class OKTMOReader {
 
-    public void readPlaces(String fileName, OktmoData data) {
+    public void readPlaces(String fileName, OKTMOData data) {
         int lineCount=0;
 
         try ( BufferedReader br = new BufferedReader(
@@ -62,7 +61,7 @@ public class OktmoReader {
                     data.addPlace(newPlace, status);
 
                     // Добавление статуса в карту статусов
-                    OktmoAnalyzer.fillingMapStatuses(status);
+                    OKTMOAnalyzer.fillingMapStatuses(status);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -82,7 +81,7 @@ public class OktmoReader {
         }
     }
 
-    public void readPlacesReg(String fileName, OktmoData data) {
+    public void readPlacesReg(String fileName, OKTMOData data) {
         int lineCount=0;
 
         try ( BufferedReader br = new BufferedReader(
@@ -93,7 +92,7 @@ public class OktmoReader {
         ) {
             String str;
             StringBuilder codeStr = new StringBuilder("");
-            Pattern reg = Pattern.compile(OktmoMain.PLACE_REG);
+            Pattern reg = Pattern.compile(OKTMOMain.PLACE_REG);
 
             while ((str=br.readLine()) !=null ) { // пока readLine() возвращает не null
                 lineCount++;
@@ -120,7 +119,7 @@ public class OktmoReader {
                     data.addPlace(newPlace, status);
 
                     // Добавление статуса в карту статусов
-                    OktmoAnalyzer.fillingMapStatuses(status);
+                    OKTMOAnalyzer.fillingMapStatuses(status);
                 }
 
 //                if (lineCount == 50) break; // для проверки сортировки
@@ -132,7 +131,7 @@ public class OktmoReader {
         }
     }
 
-    public void readPlacesGroup(String fileName, OktmoData data) {
+    public void readPlacesGroup(String fileName, OKTMOData data) {
         int lineCount=0;
 
         try ( BufferedReader br = new BufferedReader(
@@ -145,8 +144,8 @@ public class OktmoReader {
             OKTMOGroup oktmoGroupDistrictOrCity = null;
             OKTMOGroup oktmoGroupVillageCouncil = null;
 
-            Pattern reg = Pattern.compile(OktmoMain.GROUP_REG);
-            Pattern regPlace = Pattern.compile(OktmoMain.PLACE_REG);
+            Pattern reg = Pattern.compile(OKTMOMain.GROUP_REG);
+            Pattern regPlace = Pattern.compile(OKTMOMain.PLACE_REG);
             Matcher matcher;
 
             String str;
@@ -161,14 +160,14 @@ public class OktmoReader {
                 Long code = 0L;
                 String name = "";
                 String status = "";
-                OktmoLevel level;
+                OKTMOLevel level;
                 codeStr.setLength(0);
 
                 if (matcher.find()) {
 
                     if (matcher.group(2).equals("000") && matcher.group(3).equals("000") &&
                             matcher.group(4).equals("000") && matcher.group(5).startsWith("Населенные пункты")) {
-                        level = OktmoLevel.REGION;
+                        level = OKTMOLevel.REGION;
 
                         codeStr.append(matcher.group(1));
                         codeStr.append(matcher.group(2));
@@ -179,7 +178,7 @@ public class OktmoReader {
                         name = matcher.group(5);
 
                         oktmoGroupRegion = new OKTMOGroup(level, name, code);
-                        data.getOktmoGroupMap().put(code, new TreeMap<Long, OKTMOGroup>());
+                        data.getOktmoGroupMap().put(code, oktmoGroupRegion);
 
                         // Вложенная группа списка
                         data.addOktmoGroupList(oktmoGroupRegion);
@@ -191,7 +190,7 @@ public class OktmoReader {
 
                     if (!matcher.group(2).equals("000") && matcher.group(3).equals("000") &&
                             matcher.group(4).equals("000") && !matcher.group(5).startsWith("Муниципальные районы")) {
-                        level = OktmoLevel.DISTRICT_OR_CITY;
+                        level = OKTMOLevel.DISTRICT_OR_CITY;
 
                         codeStr.append(matcher.group(1));
                         codeStr.append(matcher.group(2));
@@ -202,7 +201,7 @@ public class OktmoReader {
                         name = matcher.group(5);
 
                         oktmoGroupDistrictOrCity = new OKTMOGroup(level, name, code);
-                        data.getOktmoGroupMap().get(codeUpLevel).put(code, new TreeMap<Long, <OKTMOGroup>>());
+                        data.getOktmoGroupMap().put(code, oktmoGroupDistrictOrCity);
 
                         // Вложенная группа списка
                         oktmoGroupRegion.addOktmoGroupInnerList(oktmoGroupDistrictOrCity);
@@ -214,7 +213,7 @@ public class OktmoReader {
 
                     if (!matcher.group(2).equals("000") && !matcher.group(3).equals("000") &&
                             matcher.group(4).equals("000")  && matcher.group(5).startsWith("Населенные пункты")) {
-                        level = OktmoLevel.VILLAGE_COUNCIL;
+                        level = OKTMOLevel.VILLAGE_COUNCIL;
 
                         codeStr.append(matcher.group(1));
                         codeStr.append(matcher.group(2));
@@ -225,7 +224,7 @@ public class OktmoReader {
                         name = matcher.group(5);
 
                         oktmoGroupVillageCouncil = new OKTMOGroup(level, name, code);
-                        oktmoGroupVillageCouncil.addOktmoGroupInnerMap(code, new TreeMap<Long, OKTMOGroup>());
+                        data.getOktmoGroupMap().put(code, oktmoGroupVillageCouncil);
 
                         // Вложенная группа списка
                         oktmoGroupDistrictOrCity.addOktmoGroupInnerList(oktmoGroupVillageCouncil);
@@ -237,7 +236,7 @@ public class OktmoReader {
                 matcher = regPlace.matcher(str);
 //
                 if (matcher.find()) {
-                    level = OktmoLevel.PLACE;
+                    level = OKTMOLevel.PLACE;
 
                     codeStr = new StringBuilder("");
                     codeStr.append(matcher.group(1));
@@ -253,7 +252,7 @@ public class OktmoReader {
                     oktmoGroupVillageCouncil.addPlace(newPlace);
                 }
 
-                if (lineCount == 50) break; // для проверки сортировки
+//                if (lineCount == 50) break; // для проверки сортировки
             }
         }
         catch (IOException ex) {

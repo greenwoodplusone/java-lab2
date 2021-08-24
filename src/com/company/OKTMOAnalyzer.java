@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OktmoAnalyzer {
+public class OKTMOAnalyzer {
     private static HashMap<String, Integer> mapStatuses = new HashMap<String, Integer>();
     private static ArrayList<String> placesGivenTheExpression;
 
@@ -44,7 +44,7 @@ public class OktmoAnalyzer {
      * @param regexr
      * @return
      */
-    public static ArrayList<String> getPlacesGivenTheExpression(OktmoData place, String regexr) {
+    public static ArrayList<String> getPlacesGivenTheExpression(OKTMOData place, String regexr) {
         return getPlacesGivenTheExpression(place, regexr, false);
     }
 
@@ -55,7 +55,7 @@ public class OktmoAnalyzer {
      * @param regexr
      * @return
      */
-    public static ArrayList<String> getPlacesGivenTheExpression(OktmoData place, String regexr, boolean ignoreСase) {
+    public static ArrayList<String> getPlacesGivenTheExpression(OKTMOData place, String regexr, boolean ignoreСase) {
         placesGivenTheExpression = new ArrayList<String>();
 
         for (Place thisPlace : place.getPlaces()) {

@@ -2,7 +2,7 @@ package com.company;
 
 import java.util.*;
 
-public class OktmoData{
+public class OKTMOData {
 
     private ArrayList<Place> places;
     private HashSet<String> allStatuses;
@@ -10,10 +10,9 @@ public class OktmoData{
 
     // Коллекции по группам
     private ArrayList<OKTMOGroup> oktmoGroupList = new ArrayList<OKTMOGroup>();
-    private TreeMap<Long, TreeMap <Long, TreeMap <Long, TreeMap <Long, OKTMOGroup>>>> oktmoGroupMap =
-            new TreeMap<Long, TreeMap <Long, TreeMap <Long, TreeMap <Long, OKTMOGroup>>>>();
+    private TreeMap<Long, OKTMOGroup> oktmoGroupMap = new TreeMap<Long, OKTMOGroup>();
 
-    public OktmoData() {
+    public OKTMOData() {
         this.places = new ArrayList<Place>();
         this.allStatuses = new HashSet<String>();
     }
@@ -37,7 +36,7 @@ public class OktmoData{
         return oktmoGroupList;
     }
 
-    public TreeMap<Long, TreeMap<Long, OKTMOGroup>> getOktmoGroupMap() {
+    public TreeMap<Long, OKTMOGroup> getOktmoGroupMap() {
         return oktmoGroupMap;
     }
 
@@ -49,16 +48,16 @@ public class OktmoData{
 
         for (OKTMOGroup oktmoGroupRegion : oktmoGroupList) {
             System.out.println("|___ Регион \"" + oktmoGroupRegion.getName() + "\" включает: "  +
-                    oktmoGroupRegion.getOktmoGroupList().size() + " района или города");
-            countDistrictOrCity += oktmoGroupRegion.getOktmoGroupList().size();
+                    oktmoGroupRegion.getOktmoGroupInnerList().size() + " района или города");
+            countDistrictOrCity += oktmoGroupRegion.getOktmoGroupInnerList().size();
 
-            for (OKTMOGroup oktmoGroupDistrictOrCity : oktmoGroupRegion.getOktmoGroupList()) {
+            for (OKTMOGroup oktmoGroupDistrictOrCity : oktmoGroupRegion.getOktmoGroupInnerList()) {
                 System.out.println("|___\n|___ |___ Район или город \"" + oktmoGroupDistrictOrCity.getName() +
-                        "\" включает: "  + oktmoGroupDistrictOrCity.getOktmoGroupList().size() + " сельсоветов");
+                        "\" включает: "  + oktmoGroupDistrictOrCity.getOktmoGroupInnerList().size() + " сельсоветов");
 
-                countVillageCouncil += oktmoGroupDistrictOrCity.getOktmoGroupList().size();
+                countVillageCouncil += oktmoGroupDistrictOrCity.getOktmoGroupInnerList().size();
 
-                for (OKTMOGroup oktmoVillageCouncil : oktmoGroupDistrictOrCity.getOktmoGroupList()) {
+                for (OKTMOGroup oktmoVillageCouncil : oktmoGroupDistrictOrCity.getOktmoGroupInnerList()) {
                     System.out.println("|___\n|___ |___\n|___ |___ |___ Cельсовет \"" + oktmoVillageCouncil.getName() +
                             "\" включает: "  + oktmoVillageCouncil.getPlaces().size() + " НП");
 
@@ -74,6 +73,28 @@ public class OktmoData{
         System.out.println("Количество сельсоветов: " + countVillageCouncil);
         System.out.println("Количество НП: " + countPlace);
 
+    }
+
+    public int getCountPlaceInGroup() {
+
+        int countDistrictOrCity = 0;
+        int countVillageCouncil = 0;
+        int countPlace = 0;
+
+        for (OKTMOGroup oktmoGroupRegion : oktmoGroupList) {
+            countDistrictOrCity += oktmoGroupRegion.getOktmoGroupInnerList().size();
+
+            for (OKTMOGroup oktmoGroupDistrictOrCity : oktmoGroupRegion.getOktmoGroupInnerList()) {
+                countVillageCouncil += oktmoGroupDistrictOrCity.getOktmoGroupInnerList().size();
+
+                for (OKTMOGroup oktmoVillageCouncil : oktmoGroupDistrictOrCity.getOktmoGroupInnerList()) {
+                    countPlace += oktmoVillageCouncil.getPlaces().size();
+                }
+
+            }
+        }
+
+        return countPlace;
     }
 
     /**
